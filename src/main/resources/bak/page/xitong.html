@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="app">
+<!--    查看用户-->
+    <table>
+        <tr v-for="item in userList">
+            <th><a href="#" @click="user = item">{{item.username}}</a> <button @click="del(item.id)">删除</button></th>
+        </tr>
+    </table>
+<!--    <ul>-->
+<!--        -->
+<!--        <li v-for="item in userList">{{item}}</li>-->
+<!--    </ul>-->
+    <hr>
+<!--新增用户-->
+    <div>
+        <h3>新开用户</h3>
+        <span>请输入用户名</span><input type="text" v-model="addUser.username">
+        <button @click="add">新增</button>
+    </div>
+<!--    用户信息修改-->
+    <hr>
+
+    <div>
+        <h3>修改用户信息</h3>
+        <input type="text" v-model="user.username">
+        <input type="password" v-model="user.password">
+
+        <button @click="upd">修改</button>
+
+    </div>
+
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    new Vue({
+        el:'#app',
+        data:{
+            userList:[],
+            addUser:{
+                username:'',
+                password:''
+            },
+            user:{
+
+            }
+        },
+        created() {
+            this.getAll();
+        },
+        methods: {
+
+            getAll() {
+                var _this = this;
+                axios.get("http://localhost:8080/users/getAll").then(function (res) {
+                    _this.userList = res.data
+                })
+            },
+            add(){
+                var _this = this;
+                axios.post("http://localhost:8080/users/add",_this.addUser).then(function (res) {
+                    alert("新增成功")
+                })
+            },
+            upd(){
+                var _this = this;
+                axios.post("http://localhost:8080/users/upd",_this.user).then(function (res) {
+                    alert("修改成功");
+                })
+            },
+            del(id){
+                alert(id);
+                var _this = this;
+                axios.get("http://localhost:8080/users/del/" + id).then(function (res) {
+                    alert("删除成功");
+                })
+            }
+        }
+    })
+
+
+</script>
+</body>
+</html>

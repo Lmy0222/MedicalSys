@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>副厂长</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+</head>
+<body>
+<div id="app">
+<!--公文显示-->
+    <div>
+        <table>
+            <h5>副厂长待签署意见的公文</h5>
+            <tr v-for="(item,idx) in offList">
+                <th v-show="item.postion == '副厂长'"><a href="#" @click.prevent="change(idx)">{{item.title}}</a></th>
+            </tr>
+        </table>
+    </div>
+    <hr>
+<!--副厂长审稿-->
+    <div>
+        <h3>副厂长签署意见</h3>
+        <label>{{offFrom.title}}</label><br>
+        公文内容：<el-input type="textarea" :rows="5" v-model="offFrom.content"></el-input>
+        <el-input type="textarea" :rows="2" v-model="offFrom.suggestion1" placeholder="副厂长意见"></el-input>
+        <button @click="upd">签署</button>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<!-- 引入组件库 -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script>
+    new Vue({
+        el:'#app',
+        data:{
+            offList: [{
+                id: '',
+                title: '',
+                name: '',
+                bumen: '',
+                content: '',
+                suggestion1: '',
+                suggestion2: '',
+                postion: '',
+                time: '',
+                msg:''
+            }],
+            offFrom: {
+                id: '',
+                title: '',
+                name: '',
+                bumen: '',
+                content: '',
+                suggestion1: '',
+                suggestion2: '',
+                postion: '',
+                time:''
+            }
+        },
+        created(){
+            this.getAll();
+        },
+        methods:{
+            upd() {
+                var _this = this;
+                _this.offFrom.msg = ''
+                _this.offFrom.postion = '流转1'
+                axios.post("http://localhost:8080/offdocs/updOff", _this.offFrom).then(function (res) {
+                    alert("签署成功");
+                })
+            },
+            getAll(){
+                var _this = this;
+                axios.get("http://localhost:8080/offdocs/getOffAll").then(function (res) {
+                    _this.offList = res.data;
+                    _this.offList = _this.offList.reverse();
+                })
+            },
+            change(idx) {
+                this.offFrom = this.offList[idx];
+            },
+        }
+    })
+
+
+</script>
+
+
+</body>
+</html>

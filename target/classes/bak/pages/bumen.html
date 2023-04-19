@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>部门</title>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+</head>
+
+<body>
+    <div id="app">
+<!--公文拟制-->
+        <div>
+            <h5>公文拟制</h5>
+            <label>标题</label><input type="text" v-model="offFrom.title"><br>
+            <label>起草人</label><input type="text" v-model="offFrom.name"><br>
+            <label>起草部门</label><input type="text" v-model="offFrom.bumen"><br>
+            <label>内容</label><el-input type="textarea" :rows="5" v-model="offFrom.content"></el-input><br>
+            <button @click="submit">提交</button>
+        </div>
+<!--        回执信息，确认公文已收到-->
+        <div>
+            <span>已接收:</span>
+            <ul>
+                <li v-for="item in offList"><span v-if="item.msg == '已接收'">{{item.title}}</span></li>
+            </ul>
+        </div>
+
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script>
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                offList: [{
+                    id: '',
+                    title: '',
+                    name: '',
+                    bumen: '',
+                    content: '',
+                    suggestion1: '',
+                    suggestion2: '',
+                    postion: '',
+                    time: '',
+                    msg:''
+                }],
+                offFrom: {
+                    id: '',
+                    title: '',
+                    name: '',
+                    bumen: '',
+                    content: '',
+                    suggestion1: '',
+                    suggestion2: '',
+                    postion: '',
+                    time:''
+                }
+            },
+            created() {
+                var _this = this;
+                axios.get("http://localhost:8080/offdocs/getOffAll").then(function (res) {
+                    _this.offList = res.data;
+                    _this.offList = _this.offList.reverse();
+                })
+            },
+            methods: {
+                submit() {
+                    var _this = this;
+                    axios.post("http://localhost:8080/offdocs/addOff", this.offFrom).then(function () {
+                        alert("添加成功");
+                    })
+                }
+
+            }
+        })
+    </script>
+
+</body>
+
+</html>

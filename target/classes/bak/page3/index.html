@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <style>
+        .shenglue {
+            width: 260px;
+            height: 50px;
+            white-space: nowrap;
+            /* 2.超出的部分隐藏 */
+            overflow: hidden;
+            /* 3.文字用省略号替代超出的部分 */
+            text-overflow: ellipsis;
+        }
+    </style>
+    </head>
+<body>
+<div id="app">
+
+<!--    <div class="shenglue">中共中央国务院关于完整准确全面贯彻新发展理念做好 碳达峰碳中和工作的意见</div>-->
+
+    <!--    标题栏-->
+    <div id="head" style="margin-left: 600px"><img src="LOGO.png" style="width: 30px;height: 30px"><span
+            style="font-size:30px;">科技政策查询系统</span></div>
+    <!--查询条件-->
+    <div style="margin-left: 300px;margin-top: 30px">
+        <span>政策名称<span><input type="text" v-model="selCon.name">
+        <span>政策文号</span><input type="text" v-model="selCon.document">
+        <span>发文机构</span><input type="text" v-model="selCon.organ">
+        <span>全文检索</span><input type="text" v-model="selCon.text">
+        <button @click="selectByCon">查询</button>
+    </div>
+
+    <!--表格-->
+   <div style="margin-left: 300px;margin-top: 30px" >
+       
+       <el-table :data="PolicyList" style="width: 100%">
+           <el-table-column label="政策名称" width="400">
+               <template slot-scope="scope">
+                   <div style="margin-left: 10px" class="shenglue"><a :href="'http://localhost:8080/page3/main.html?id='+scope.row.id" >{{ scope.row.name }}</a></div>
+               </template>
+           </el-table-column>
+           <el-table-column label="政策分类" width="180">
+               <template slot-scope="scope">
+                   <span style="margin-left: 10px">{{ scope.row.type }}</span>
+               </template>
+           </el-table-column>
+           <el-table-column label="发文机构" width="180">
+               <template slot-scope="scope">
+                   <span style="margin-left: 10px">{{ scope.row.organ }}</span>
+               </template>
+           </el-table-column>
+           <el-table-column label="颁布日期" width="180">
+               <template slot-scope="scope">
+                   <span style="margin-left: 10px">{{ scope.row.viadata }}</span>
+               </template>
+           </el-table-column>
+<!--           <el-table-column label="操作">-->
+<!--               <template slot-scope="scope">-->
+<!--                   <el-button-->
+<!--                           size="mini"-->
+<!--                           @click="handleEdit(scope.$index, scope.row)">查看</el-button>-->
+<!--               </template>-->
+<!--           </el-table-column>-->
+       </el-table>
+<!--       分页-->
+       <div class="block">
+           <span class="demonstration">完整功能</span>
+           <el-pagination
+                   @size-change="handleSizeChange"
+                   @current-change="handleCurrentChange"
+                   :current-page="currentPage"
+                   :page-sizes="[5, 10, 20, 30]"
+                   :page-size="5"
+                   layout="total, sizes, prev, pager, next, jumper"
+                   :total="400">
+           </el-pagination>
+       </div>
+
+   </div>
+
+
+
+
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<!-- 引入组件库 -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            PolicyList: [
+                {
+                    id: '',
+                    name: '', // 政策名称
+                    type: '', //政策分类
+                    document: '',  // 政策文号
+                    form: '',
+                    organ: '', // 发文机构
+                    text: '',
+                    viadata: '' // 颁布日期
+                }
+            ],
+            selCon:{
+                id: '',
+                name: '', // 政策名称
+                type: '', //政策分类
+                document: '',  // 政策文号
+                form: '',
+                organ: '', // 发文机构
+                text: '',
+                viadata: '' // 颁布日期
+            },
+            currentPage: 1,
+            pageSize:5
+
+
+        },
+        created() {
+            this.selByPage();
+            // var _this = this;
+            // axios.get("http://localhost:8080/policy/getAll").then(function (res) {
+            //     _this.PolicyList = res.data;
+            //     // alert(_this.PolicyList )
+            // })
+        },
+        methods: {
+            selectByCon(){
+
+            },
+            selByPage(){
+                var _this = this;
+                axios.get("http://localhost:8080/policy/getByPage?curPage=" + _this.currentPage + "&pageSize=" + _this.pageSize).then(function (res) {
+                    _this.PolicyList = res.data;
+                    // alert(_this.PolicyList )
+                })
+            },
+            handleSizeChange(val) {
+
+                console.log(`每页 ${val} 条`);
+            },
+            handleCurrentChange(val) {
+                this.currentPage = val;
+                this.selByPage();
+                console.log(`当前页: ${val}`);
+            },
+            selectByCon(){
+                var _this = this;
+                axios.post("http://localhost:8080/policy/getByCon",_this.selCon).then(function (res) {
+                    _this.PolicyList = res.data;
+                    // alert(_this.PolicyList )
+                })
+            }
+        }
+    })
+
+
+</script>
+
+</body>
+</html>

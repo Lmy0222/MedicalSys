@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>地铁线路查询系统</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <style type="text/css">
+    #ul1 {
+      list-style: none;
+    }
+    #ul2 {
+      list-style: none;
+    }
+    #ul3 {
+      list-style: none;
+    }
+
+    /*设置超链接样式*/
+    table {
+      border-collapse: collapse;
+      border-spacing: 0;
+    }
+
+    a {
+      color: #5086a5;
+      text-decoration: none;
+      font-size: 12px;
+    }
+
+    a:hover {
+      color: #5086a5;
+      text-decoration: underline;
+      font-size: 12px;
+    }
+
+    a:visited {
+      color: #5086a5;
+      font-size: 12px;
+    }
+    /*整个tab层居中，宽度为600px*/
+    #tabDiv {
+      width: 600px;
+      margin: 1em auto;
+      padding-bottom: 10px;
+      border-right: #b2c9d3 1px solid;
+      border-top: #b2c9d3 1px solid;
+      border-left: #b2c9d3 1px solid;
+      border-bottom: #b2c9d3 1px solid;
+      background: #ffffff;
+    }
+    /*tab头的样式*/
+    #tabsHead {
+      padding-left: 0px;
+      height: 26px;
+      background-color: #e8f7fc;
+      font-size: 1em;
+      margin: 1px 0px 0px;
+      color: #5086a5;
+      line-height: 26px;
+    }
+    /*已选tab头（超链接）的样式*/
+    .curtab {
+      padding-top: 0px;
+      padding-right: 10px;
+      padding-bottom: 0px;
+      padding-left: 10px;
+      border-right: #b2c9d3 1px solid;
+      font-weight: bold;
+      float: left;
+      cursor: pointer;
+      background: #ffffff;
+    }
+    /*未选tab头（超链接）的样式*/
+    .tabs {
+      border-right: #c1d8e0 1px solid;
+      padding-top: 0px;
+      padding-right: 10px;
+      padding-bottom: 0px;
+      padding-left: 10px;
+      font-weight: normal;
+      float: left;
+      cursor: pointer;
+    }
+    p {
+      font-size: 12pt;
+      text-indent: 2em;
+    }
+    li {
+      border-bottom-style: solid;
+      border-bottom-color: #EEE;
+      border-bottom-width: thin;
+      height: 25px;
+      font-family: "宋体";
+      font-size: 12pt;
+    }
+  </style>
+  <script type="text/jscript">
+        //显示tab（tabHeadId：tab头中当前的超链接；tabContentId要显示的层ID）
+        function showTab(tabHeadId,tabContentId)
+        {
+            //tab层
+            var tabDiv = document.getElementById("tabDiv");
+            //将tab层中所有的内容层设为不可见
+            //遍历tab层下的所有子节点
+            var taContents = tabDiv.childNodes;
+            for(i=0; i<taContents.length; i++)
+            {
+                //将所有内容层都设为不可见
+                if(taContents[i].id!=null && taContents[i].id != 'tabsHead')
+                {
+                    taContents[i].style.display = 'none';
+                }
+            }
+            //将要显示的层设为可见
+            document.getElementById(tabContentId).style.display = 'block';
+            //遍历tab头中所有的超链接
+            var tabHeads = document.getElementById('tabsHead').getElementsByTagName('a');
+            for(i=0; i<tabHeads.length; i++)
+            {
+                //将超链接的样式设为未选的tab头样式
+                tabHeads[i].className='tabs';
+            }
+            //将当前超链接的样式设为已选tab头样式
+            document.getElementById(tabHeadId).className='curtab';
+            document.getElementById(tabHeadId).blur();
+        }
+</script>
+</head>
+
+<body >
+<div id="app">
+  <div style="width: 100%; font-family: 微软雅黑; text-align: center; font-size: 20pt;">北京地铁查询系统</div>
+  <div id="tabDiv" style="width: 1000px">
+    <!--页面标签-->
+    <div id="tabsHead">
+      <a id="tabs1" class="curtab" href="javascript:showTab('tabs1','tabContent1')">线路查询</a>
+      <a id="tabs2" class="tabs" href="javascript:showTab('tabs2','tabContent2')">站点查询</a>
+      <a id="tabs3" class="tabs" href="javascript:showTab('tabs3','tabContent3')">站点-终点查询</a>
+    </div>
+    <!--页面1-->
+    <div id="tabContent1" style="display: block">
+
+        线路查询：<input v-model="lineName"><button @click="lineSearch">查询</button>
+        <ul id="ul1">
+          <li v-for="item in lineStops" >{{item}}</li>
+        </ul>
+
+    </div>
+
+    <!--页面2-->
+    <div id="tabContent2" style="display: none">
+      站点查询：<input v-model="stopName"><button @click="stopSearch">查询</button>
+      <ul id="ul2">
+        <li v-for="item in StopInLine" >{{item}}</li>
+      </ul>
+    </div>
+
+    <!--页面3-->
+    <div id="tabContent3" style="display: none">
+
+      起点站:<input v-model="stop1">
+      终点站:<input v-model="stop2">
+      <button @click="twoStopSearch">查询</button>
+
+      <ul id="ul3">
+        <li v-show="showCount">{{stopCount}}</li>
+        <li v-for="(item, idx) in stop1ToStop2">{{item}}<span v-if="judgeChangeLine(idx,item)" style="color: red">---{{stopInLine[idx-1]}}换乘{{stopInLine[idx+1]}}</span></li>
+      </ul>
+    </div>
+
+  </div>
+  <hr />
+  <div style="text-align: center; width: 100%; font-size: 12px; color: #333;">&copy;版权所有：石家庄铁道大学信息科学与技术学院</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+  new Vue({
+    el:'#app',
+    data:{
+      showCount: false,
+      stopCount:0,
+      lineName:'',
+      lineStops:[],
+      stopName:'',
+      StopInLine:[],
+      stop1:'',
+      stop2:'',
+      stop1ToStop2:[],
+      stopInLine:[],
+      crossStop:['公主坟','慈寿寺','惠新西街南口','大屯路东','东四', '东单', '呼家楼', '国贸', '宋家庄']
+    },
+    methods:{
+      lineSearch(){
+
+          var _this = this;
+        _this.lineStops = []
+          axios.get("/stops/lineSearch?line=" + _this.lineName).then(function (res) {
+            for (var i = 0; i < res.data.length; i ++){
+              _this.lineStops.push( (res.data)[i]["stopName"]);
+            }
+            console.log(_this.lineStops)
+          })
+        },
+      stopSearch(){
+
+        var _this = this;
+        _this.StopInLine = [];
+        axios.get("/stops/stopSearch?stop=" + _this.stopName).then(function (res) {
+          for (var i = 0; i < res.data.length; i ++){
+            _this.StopInLine.push( (res.data)[i]["lineName"]);
+          }
+
+        })
+      },
+      twoStopSearch(){
+        var _this = this;
+        _this.stop1ToStop2 = [];
+        axios.get("/stops/searchOntInOneLine?stop1=" + _this.stop1 + "&stop2="+  _this.stop2).then(function (res) {
+
+          for (var i = 0; i < res.data.length; i ++){
+            _this.stop1ToStop2.push( (res.data)[i]);
+          }
+          _this.getLine();
+          _this.showCount = true;
+          _this.stopCount =  _this.stop1ToStop2.length;
+        })
+      },
+      getLine(){
+        var _this = this;
+        axios.post("/stops/getLine", _this.stop1ToStop2).then(function (res) {
+          _this.stopInLine = res.data;
+        })
+
+      },
+      judgeChangeLine(idx, stop){
+
+        if (idx == 0 || idx ==this.stopInLine.length-1 )
+          return  false;
+        var falg = false;
+        this.crossStop.forEach(item=>{
+          if (item == stop){
+            falg = true;
+          }
+        })
+        console.log(idx + " "+stop + "  " + this.stopInLine[idx-1] + '  '
+                + this.stopInLine[idx+1] + " " + (stop in this.crossStop)
+                + "  " + (this.stopInLine[idx-1] != this.stopInLine[idx+1]) + "  " + this.crossStop + " " + falg)
+        // console.log(idx)
+
+        if ( falg && (this.stopInLine[idx-1] != this.stopInLine[idx+1]) ){
+          return true;
+        }
+        return false;
+      }
+
+
+      }
+
+  })
+</script>
+
+</body>
+</html>

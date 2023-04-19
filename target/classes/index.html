@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登陆页面</title>
+    <style>
+        div {
+            margin-top: 300px;
+            margin-left: 300px;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <h1>新闻系统</h1>
+    <form>
+        用户名：<input type="text" v-model="user.username"><br>
+        密码：<input type="password" v-model="user.password"><br>
+        验证码:<input type="text" v-model="yanzhengma1"><span  style="border: 2px solid black;margin: 20px">{{yanzhengma2}}</span><br>
+        身份: <select v-model="shenfen">
+        <option selected="selected">请选择</option>
+        <option value="新闻撰稿人">新闻撰稿人</option>
+        <option value="普通用户">普通用户</option>
+        <option value="新闻栏目管理员">新闻栏目管理员</option>
+        <option value="系统管理">系统管理</option>
+    </select>
+        <input type="button" @click="login" value="登录">
+    </form>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            user: {
+                username: "123456789",
+                password: "123456"
+            },
+            shenfen: "",
+            yanzhengma1:"",
+            yanzhengma2:""
+        },
+        created(){
+          // 生成验证码
+            this.creatIdentity();
+        },
+        methods:{
+            login(){
+                // 判断验证码是否正确
+                if (this.yanzhengma1 != this.yanzhengma2){
+                    alert("验证码错误");
+                    return ;
+                }
+
+                var _this = this;
+                axios.post("/users/login",_this.user).then(function (res){
+                    if (res.data.code == 1){
+                        switch(_this.shenfen){
+                            case "新闻撰稿人":
+                                window.location.href = "page/zhuangaoren.html";
+                                break;
+                            case "普通用户":
+                                window.location.href = "page/yonghu.html";
+                                break;
+                            case "新闻栏目管理员":
+                                window.location.href = "page/lanmu.html";
+                                break;
+                            case "系统管理":
+                                window.location.href = "page/xitong.html";
+                                break;
+
+                        }
+                    }else{
+                       alert(res.data.msg);
+                    }
+                })
+            },
+            /**
+             * 生成验证码
+             */
+            creatIdentity(){
+                var tem = ['a', 'b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'];
+                var str = "";
+                for (var i = 0; i < 4; i ++){
+                    var x = Math.random()*24
+                    str += tem[Math.floor(x)];
+                }
+                this.yanzhengma2 = str;
+            }
+        }
+
+    })
+
+</script>
+</body>
+</html>

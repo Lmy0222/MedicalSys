@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>办公室</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+</head>
+
+<body>
+    <div id="app">
+<!--待修改的公文-->
+        <table>
+            <h3>待修改公文</h3>
+            <input type="datetime-local" v-model="time1"><input type="datetime-local" v-model="time2"><button @click="filterByTime">按时间段查询</button>
+            <tr v-for="(item,idx) in offList">
+                <th v-show="item.postion == '办公室'"><a href="#" @click.prevent="change(idx)">{{item.title}}</a></th>
+            </tr>
+        </table>
+        <hr>
+<!--        查看公文-->
+        <div>
+            <h3>查看公文</h3>
+            <label>{{offFrom.title}}</label>
+            <el-input type="textarea" :rows="5" v-model="offFrom.content"></el-input>
+            <button @click="upd">修改</button>
+            <button @click="clear">格式化</button>
+        </div>
+        <hr>
+<!--        第一次流转的公文-->
+        <div>
+            <table>
+                <h3>待第一次流转的公文</h3><span>点击标题即可完成流转</span>
+                <tr v-for="(item,idx) in offList">
+                    <th v-show="item.postion == '流转1'">
+                        <a href="#" @click.prevent="liuzhuan1(idx)">{{item.title}}</a>
+                    </th>
+                </tr>
+            </table>
+        </div>
+<!--        -->
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                offList: [],
+                offFrom: {
+                    id: '',
+                    title: '',
+                    name: '',
+                    bumen: '',
+                    content: '',
+                    suggestion1: '',
+                    suggestion2: '',
+                    postion: '',
+                    time: ''
+                },
+                time1:'',
+                time2:''
+            },
+            created() {
+                var _this = this;
+                axios.get("http://localhost:8080/offdocs/getOffAll").then(function (res) {
+                    _this.offList = res.data;
+                    _this.offList = _this.offList.reverse();
+                })
+            },
+            methods: {
+                upd() {
+                    var _this = this;
+                    _this.offFrom.msg = '已接收'
+                    _this.offFrom.postion = '副厂长'
+                    axios.post("http://localhost:8080/offdocs/updOff", _this.offFrom).then(function (res) {
+                        alert("修改成功");
+                    })
+                },
+                change(idx) {
+                    this.offFrom = this.offList[idx];
+                },
+                filterByTime(){
+                    var _this = this
+                    this.offList = this.offList.filter((x)=>{
+                        // alert(x.time)
+                        // alert(new Date(_this.time1))
+                        // alert(new Date(_this.time2))
+                        return new Date(x.time) > new Date(_this.time1) && new Date(x.time) < new Date(_this.time2);
+                    })
+                },
+                clear(){
+                    this.offFrom.content = '';
+                    var _this = this;
+                    axios.post("http://localhost:8080/offdocs/updOff", _this.offFrom).then(function (res) {
+                        alert("格式化成功");
+                    })
+                },
+                liuzhuan1(idx) {
+                    var _this = this;
+                    _this.offList[idx].postion = '厂长'
+                    axios.post("http://localhost:8080/offdocs/updOff", _this.offList[idx]).then(function (res) {
+                        alert("流转成功");
+                    })
+                },
+
+            }
+        })
+
+
+    </script>
+</body>
+
+</html>

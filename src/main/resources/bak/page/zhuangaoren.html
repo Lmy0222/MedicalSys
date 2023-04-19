@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+</head>
+<body>
+<div id="app">
+    <!--    撰写新闻-->
+    <div>
+        <h3>撰写新闻</h3>
+        <input type="text" v-model="news.title" placeholder="标题"><br>
+        <input type="text" v-model="news.name" placeholder="撰稿人"><br>
+        <el-input type="textarea" :rows="5" v-model="news.content" placeholder="内容"></el-input>
+        <br><br>
+        <select v-model="news.lanmu">
+            <option value="栏目1">栏目1</option>
+            <option value="栏目2">栏目2</option>
+            <option value="栏目3">栏目3</option>
+        </select>
+        <button @click="add">提交</button>
+    </div>
+    <hr>
+    <!--    显示所有新闻标题-->
+    <table>
+        <tr v-for="item in newsList">
+<!--            -->
+            <th><a href="#" @click="news2 = item">{{item.title}}</a></th>
+        </tr>
+    </table>
+    <hr>
+    <!--    显示单个新闻内容-->
+    <div>
+        <h3>查看具体信息</h3>
+        <span>标题:{{news2.title}}</span><br>
+        <span>撰写人:{{news2.name}}</span><br>
+        <span>内容:</span><el-input type="textarea" :rows="5" v-model="news2.content" placeholder="内容"></el-input>
+        <button @click="upd">修改内容</button>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<!-- 引入组件库 -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            news: {
+                title: '',
+                name: '',
+                content: '',
+                lanmu: ''
+            },
+            newsList: [],
+            news2: {
+            },
+        },
+        created() {
+            this.getAll();
+        },
+        methods: {
+            add() {
+                var _this = this;
+                axios.post("http://localhost:8080/news/create", _this.news).then(function (res) {
+                    alert("添加成功")
+                    _this.news = {
+                        title: '',
+                        name: '',
+                        content: '',
+                        lanmu: ''
+                    }
+                })
+            },
+            getAll() {
+                var _this = this;
+                axios.get("http://localhost:8080/news/getAll").then(function (res) {
+                    _this.newsList = res.data
+                })
+            },
+            upd(){
+                var _this = this;
+                axios.post("http://localhost:8080/news/upd", _this.news2).then(function (res) {
+                    alert("修改成功");
+                })
+            },
+
+        }
+    })
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="app">
+<!--    给出意并发布-->
+    <h3>待发新闻</h3>
+    <ul>
+        <li v-for="item in newsList" >
+            <div v-if="item.fabu == '待发'">
+                <span>{{item.title}}</span><input type="text" v-model="item.sug" placeholder="请输入意见"/><button @click="fabu(item)">发布</button>
+                <button @click="del(item.id)">删除</button>
+            </div>
+        </li>
+    </ul>
+    <h3>已发新闻</h3>
+    <ul>
+        <li v-for="item in newsList" >
+            <div v-if="item.fabu == '已发'">
+                <span>{{item.title}}</span><button @click="del(item.id)">删除</button>
+            </div>
+        </li>
+    </ul>
+    <hr>
+    <h3>新闻栏目管理</h3>
+    <table>
+        <tr v-for="item in lanmuList">
+            <th><input type="text" v-model="item.lanmuming"></th>
+            <th><button @click="xiugailanmu(item)">修改</button></th>
+        </tr>
+    </table>
+    <hr>
+    <h3>栏目合并</h3>
+    <input type="text" placeholder="请输入第一个栏目的id" v-model="id1">
+    <input type="text" placeholder="请输入第二个栏目的id" v-model="id2">
+    <input type="text" placeholder="请输入合并后的栏目名" v-model="ming">
+    <button @click="hebing">合并</button>
+<!--    管理新闻评论-->
+    <h3>查看评论</h3>
+    <table>
+        <tr  v-for="item in newsList">
+            <th>{{item.title}} ---- 评论:{{item.pinglun}} <button @click="">删除</button></th>
+        </tr>
+    </table>
+
+
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    new Vue({
+        el:'#app',
+        data:{
+            newsList:[],
+            lanmuList:[],
+            id1:0,
+            id2:0,
+            ming:''
+        },
+        created(){
+            this.getAll()
+        },
+        methods:{
+            getAll(){
+                var _this = this;
+                axios.get("http://localhost:8080/news/getAll").then(function (res) {
+                    _this.newsList = res.data
+                })
+                axios.get("http://localhost:8080/lanmu/getAll").then(function (res) {
+                    _this.lanmuList = res.data
+                })
+            },
+            fabu(item){
+                var _this = this;
+                item.fabu = "已发"
+                axios.post("http://localhost:8080/news/upd", item).then(function (res) {
+                    alert("发布成功");
+                })
+            },
+            del(id){
+                axios.delete("http://localhost:8080/news/del/"+id).then(function (res) {
+                   alert("删除成功")
+                })
+            },
+            xiugailanmu(item){
+
+                axios.post("http://localhost:8080/lanmu/upd/",item).then(function (res) {
+                    alert("修改成功");
+                })
+            },
+            hebing(){
+                var _this = this;
+                axios.get("http://localhost:8080/lanmu/hebing?id1="+_this.id1 + "&id2=" + _this.id2 + "&ming=" + _this.ming).then(function (res) {
+                    alert("合并成功");
+                })
+            }
+        }
+    })
+
+
+</script>
+</body>
+</html>

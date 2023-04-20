@@ -13,9 +13,7 @@ import java.util.List;
 
 @Mapper
 public interface UserDao extends BaseMapper<User> {
-    //查找出已经申请挂号的患者，医生执行挂号功能
-    @Select("select * from registration where apply=#{apply}")
-    public List<User> getList(String status);
+
 
 
 

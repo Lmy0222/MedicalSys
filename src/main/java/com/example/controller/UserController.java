@@ -24,11 +24,6 @@ public class UserController {
         return userDao.selectById(id);
     }
 
-    @GetMapping("/getList")
-    public List<User> getList(@PathParam("status") String status){
-        return userDao.getList(status);
-    }
-
 
 
 

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.dao.PatientDao;
 import com.example.domain.Medicine;
 import com.example.domain.Patient;
+import com.example.domain.User;
 import org.apache.ibatis.annotations.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,10 @@ public class PatientController {
     private PatientDao patientdao;
 
 
+    @RequestMapping("/getList")
+    public List<Patient> getList(String status){
+        return patientdao.getList(status);
+    }
 
     @RequestMapping("/updateApplyById")
     public boolean updateApplyById(@PathParam("id") int id){
@@ -74,5 +79,7 @@ public class PatientController {
     @GetMapping("/getHistoryByIdCard")
     public List<Patient> getHistoryByIdCard(@PathParam("id") String idCard){
         return patientdao.getHistoryByIdCard(idCard);
+
     }
+
 }

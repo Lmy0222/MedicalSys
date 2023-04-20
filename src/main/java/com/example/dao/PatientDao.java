@@ -2,6 +2,7 @@ package com.example.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.domain.Patient;
+import com.example.domain.User;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -10,6 +11,11 @@ import org.apache.ibatis.annotations.Update;
 import java.util.List;
 @Mapper
 public interface PatientDao extends BaseMapper<Patient> {
+
+    //查找出已经申请挂号的患者，医生执行挂号功能
+    @Select("select * from registration where apply=#{apply}")
+    List<Patient> getList(String status);
+
     //根据id修改申请挂号的状态
     @Update("update registration set apply where id=#{id}")
     boolean updateApplyById(int id);
@@ -53,4 +59,6 @@ public interface PatientDao extends BaseMapper<Patient> {
     //医生利用身份证号的唯一性进行查询
     @Select("select * from registration where idCard=#{idCard}")
     List<Patient> getHistoryByIdCard(String idCard);
+
+
 }

@@ -9,6 +9,11 @@
 {{user}}
 
 
+
+
+
+
+
 </div>
 <!--axios-->
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -22,7 +27,7 @@
             user:{}
         },
         created(){
-            alert("created被调用...")
+            // alert("created被调用...")
             var _this = this
           axios.get("http://localhost:8080/users/getOne?id=1").then(function (res){
               _this.user = res.data;

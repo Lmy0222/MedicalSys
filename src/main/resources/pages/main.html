@@ -83,13 +83,13 @@
           <el-table-column label="治疗计划" prop="plan"></el-table-column>
           <el-table-column label="身份证号" prop="idCard"></el-table-column>
           <!-- solt="header"是为了插入表头的，这里遍历listStudent[0],是因为表头都一样，所以取第一行数据的字段做为表头即可 -->
-          <el-table-column v-for="(item, index) in list[0]" :key="index">
-            <template slot="header">
-              申请状态：{{item.apply}}
-            </template>
+          <el-table-column v-for="(item, index) in list" :key="index">
+<!--            <template slot="header">-->
+<!--              -->
+<!--            </template>-->
 <!--            &lt;!&ndash; index对应下面动态列（answerList）的索引，取出值渲染 &ndash;&gt;-->
 <!--            <template slot-scope="scope">{{scope.row.answerList[index].answer}}</template>-->
-            <template slot-scope="scope">{{scope.row.list[index]}}</template>
+            <template slot-scope="scope">{{scope.row.list}}</template>
           </el-table-column>
         </el-table>
       </el-main>

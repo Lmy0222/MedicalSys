@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.dao.PatientDao;
 import com.example.domain.Medicine;
@@ -22,8 +23,8 @@ public class PatientController {
 
 
     @RequestMapping("/getList")
-    public List<Patient> getList(String status){
-        return patientdao.getList(status);
+    public List<Patient> getList(String apply){
+        return patientdao.getList(apply);
     }
 
     @RequestMapping("/updateApplyById")

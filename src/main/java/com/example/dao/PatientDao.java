@@ -14,7 +14,7 @@ public interface PatientDao extends BaseMapper<Patient> {
 
     //查找出已经申请挂号的患者，医生执行挂号功能
     @Select("select * from registration where apply=#{apply}")
-    List<Patient> getList(String status);
+    List<Patient> getList(String apply);
 
     //根据id修改申请挂号的状态
     @Update("update registration set apply where id=#{id}")

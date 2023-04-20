@@ -68,15 +68,28 @@
 
       <el-main>
         <el-table :data="list">
-          <el-table-column prop="name" label="姓名" width="120">
-          </el-table-column>
-          <el-table-column prop="sex" label="性别" width="120">
-          </el-table-column>
-          <el-table-column prop="age" label="年龄" width="120">
-          </el-table-column>
-          <el-table-column prop="symptom" label="相关症状" width="150">
-          </el-table-column>
-          <el-table-column prop="about" label="相关操作">
+          <el-table-column label="编号" prop="id"></el-table-column>
+          <el-table-column label="姓名" prop="name"></el-table-column>
+          <el-table-column label="性别" prop="sex"></el-table-column>
+          <el-table-column label="年龄" prop="age"></el-table-column>
+          <el-table-column label="申请状态" prop="apply"></el-table-column>
+          <el-table-column label="相关症状" prop="symptom"></el-table-column>
+          <el-table-column label="就诊状态" prop="status"></el-table-column>
+          <el-table-column label="检查结果" prop="result"></el-table-column>
+          <el-table-column label="医生建议" prop="suggestion"></el-table-column>
+          <el-table-column label="评论" prop="saying"></el-table-column>
+          <el-table-column label="日期" prop="date"></el-table-column>
+          <el-table-column label="使用药方" prop="useMedicine"></el-table-column>
+          <el-table-column label="治疗计划" prop="plan"></el-table-column>
+          <el-table-column label="身份证号" prop="idCard"></el-table-column>
+          <!-- solt="header"是为了插入表头的，这里遍历listStudent[0],是因为表头都一样，所以取第一行数据的字段做为表头即可 -->
+          <el-table-column v-for="(item, index) in list[0]" :key="index">
+            <template slot="header">
+              申请状态：{{item.apply}}
+            </template>
+<!--            &lt;!&ndash; index对应下面动态列（answerList）的索引，取出值渲染 &ndash;&gt;-->
+<!--            <template slot-scope="scope">{{scope.row.answerList[index].answer}}</template>-->
+            <template slot-scope="scope">{{scope.row.list[index]}}</template>
           </el-table-column>
         </el-table>
       </el-main>
@@ -96,21 +109,39 @@
     el:"#main",
     data(){
       return{
-        list:[]
-      };
+        list:[{}]
+      }
     },
-    mounted(){
-      this.getList()
+    created(){
+      // alert("created被调用...")
+      var _this = this
+      axios.get("http://localhost:8080/patients/getList?apply=1").then(function (res){
+        _this.list = res.data;
+      })
     },
     methods:{
-      getList(){
-        axios.post("http://localhost:8080/patients/apply=1").then(res=>{
-          this.list=res.data
-        }).catch(err=>{
-          console.log(err);
-        })
-      }
+
     }
   })
+  // new Vue({
+  //   el:"#main",
+  //   data(){
+  //     return{
+  //       list:[]
+  //     };
+  //   },
+  //   mounted(){
+  //     this.getList()
+  //   },
+  //   methods:{
+  //     getList(){
+  //       axios.post("http://localhost:8080/patients/apply=1").then(res=>{
+  //         this.list=res.data
+  //       }).catch(err=>{
+  //         console.log(err);
+  //       })
+  //     }
+  //   }
+  // })
 </script>
 </html>

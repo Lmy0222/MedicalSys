@@ -18,4 +18,7 @@ public class Patient {
     String saying;//患者评论
     String date;//当前日期--年月日
     String useMedicine;//患者用药
+    String plan;//治疗计划
+
+    String idCard;//患者身份证号，用于历史查询
 }

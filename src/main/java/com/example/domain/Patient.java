@@ -11,6 +11,7 @@ public class Patient {
     String sex;
     Integer age;
     String apply;//申请挂号状态
+    String g;//挂号状态
     String symptom;//相关症状
     String status;//就诊状态
     String result;//检查结果

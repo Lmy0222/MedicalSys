@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+  <div id="test">
+    <el-table :data="listStudent">
+      <el-table-column label="id" prop="id"></el-table-column>
+      <el-table-column label="studentName" prop="studentName"></el-table-column>
+      <!-- solt="header"是为了插入表头的，这里遍历listStudent[0],是因为表头都一样，所以取第一行数据的字段做为表头即可 -->
+      <el-table-column v-for="(item, index) in listStudent[0].answerList" :key="index">
+        <template slot="header">
+          第{{item.num}}题
+        </template>
+        <!-- index对应下面动态列（answerList）的索引，取出值渲染 -->
+        <template slot-scope="scope">{{scope.row.answerList[index].answer}}</template>
+      </el-table-column>
+    </el-table>
+  </div>
+
+</body>
+
+<link rel="stylesheet" href="https://unpkg.com/element-ui@2.15.6/lib/theme-chalk/index.css">
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/element-ui@2.4.11/lib/index.js"></script>
+<!--axios-->
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<script>
+
+  new Vue({
+    el:"#test",
+    data(){
+      return{
+        listStudent: [{
+          id: 1,
+          studentName: 'zhangsan',
+          answerList: [{
+            num: '1',
+            answer: 'A'
+          },
+            {
+              num: '2',
+              answer: 'B'
+            },
+            {
+              num: '3',
+              answer: 'C'
+            },
+          ]
+        },
+          {
+            id: 2,
+            studentName: 'lisi',
+            answerList: [{
+              num: '1',
+              answer: 'C'
+            },
+              {
+                num: '2',
+                answer: 'B'
+              },
+              {
+                num: '3',
+                answer: 'C'
+              },
+            ]
+          }]
+      }
+
+    },
+    methods:{
+
+    }
+  })
+
+
+</script>
+
+
+</html>

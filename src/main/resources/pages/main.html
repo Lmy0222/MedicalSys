@@ -73,6 +73,7 @@
           <el-table-column label="性别" prop="sex"></el-table-column>
           <el-table-column label="年龄" prop="age"></el-table-column>
           <el-table-column label="申请状态" prop="apply"></el-table-column>
+          <el-table-column label="挂号状态" prop="g"></el-table-column>
           <el-table-column label="相关症状" prop="symptom"></el-table-column>
           <el-table-column label="就诊状态" prop="status"></el-table-column>
           <el-table-column label="检查结果" prop="result"></el-table-column>
@@ -89,7 +90,11 @@
 <!--            </template>-->
 <!--            &lt;!&ndash; index对应下面动态列（answerList）的索引，取出值渲染 &ndash;&gt;-->
 <!--            <template slot-scope="scope">{{scope.row.answerList[index].answer}}</template>-->
-            <template slot-scope="scope">{{scope.row.list}}</template>
+
+            <template slot-scope="scope">
+              {{scope.row.list}}
+              <el-button @click="handleClick(scope.row,scope.$index)" type="text" size="small">挂号</el-button>
+            </template>
           </el-table-column>
         </el-table>
       </el-main>
@@ -107,6 +112,9 @@
 <script>
   new Vue({
     el:"#main",
+    mounted(){
+      this.data()
+    },
     data(){
       return{
         list:[{}]
@@ -120,7 +128,28 @@
       })
     },
     methods:{
-
+      //  按钮点击事件
+      handleClick(val,indexs){
+        this.$prompt('确定为他挂号？','提示',{
+          confirmButtonText:'确定',
+          cancelButtonText:'取消'
+        }).then(({value})=>{
+          this.$message({
+            type:'success',
+            message:'挂号成功！'
+          });
+          var val=value;
+          this.list[indexs].g = JSON.parse(value);
+          val.g = JSON.parse(value);
+          this.$set(this.list, indexs, val);
+        }).catch(()=>{
+          this.$message({
+            type:'failure',
+            message:'取消挂号！'
+          });
+        });
+        console.log(row);
+      }
     }
   })
   // new Vue({

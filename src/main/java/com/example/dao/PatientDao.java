@@ -17,8 +17,8 @@ public interface PatientDao extends BaseMapper<Patient> {
     List<Patient> getList(String apply);
 
     //根据id修改申请挂号的状态
-    @Update("update registration set apply where id=#{id}")
-    boolean updateApplyById(int id);
+    @Update("update registration set g where id=#{id}")
+    boolean updateGById(int id);
 
     //医生开药，将药品名称逗号分隔，将useMedicine暂无修改为药品数组
     @Update("update registration set useMedicine where id=#{id}")

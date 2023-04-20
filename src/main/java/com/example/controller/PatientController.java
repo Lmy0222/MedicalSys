@@ -27,9 +27,9 @@ public class PatientController {
         return patientdao.getList(apply);
     }
 
-    @RequestMapping("/updateApplyById")
-    public boolean updateApplyById(@PathParam("id") int id){
-        return patientdao.updateApplyById(id);
+    @RequestMapping("/updateGById")
+    public boolean updateGById(@PathParam("id") int id){
+        return patientdao.updateGById(id);
     }
 
     @RequestMapping("/updateUseMedicineById")
